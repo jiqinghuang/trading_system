@@ -9,7 +9,7 @@ if __name__ == "__main__":
     # 从自定义表名读取
     # 使用绝对路径或正确相对路径
     # data_loader = DataHandler("data/AU_T_D__SGE.csv", file_type='csv')
-    data_loader = DataHandler("data/AG_T_D__SGE.parquet", file_type='parquet')
+    data_loader = DataHandler("data/AU_T_D__SGE.parquet", file_type='parquet')
     data_loader.preprocess_data(
     start_date=datetime(2020,1,1), 
     end_date=datetime(2025,5,20)
