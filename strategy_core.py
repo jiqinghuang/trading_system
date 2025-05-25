@@ -1,3 +1,4 @@
+# will change and rich later
 import numpy as np
 
 class TradingStrategyCore:
