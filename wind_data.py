@@ -2,11 +2,11 @@
 """
 Wind金融数据获取与存储模块(Parquet版本)
 
-该模块提供从Wind金融终端获取期货商品指数数据，
+该模块提供从Wind金融终端获取贵金属(T+D)市场数据，
 并存储到本地Parquet文件的功能。支持多品种数据管理。
 
 主要功能：
-- 从Wind获取一系列商品指数OHLC等市场数据
+- 从Wind获取AG(T+D)和AU(T+D)的OHLC等市场数据
 - 数据存储到本地Parquet文件
 - 支持增量更新数据
 - 支持多品种并行处理
@@ -19,7 +19,7 @@ import polars as pl
 from WindPy import w
 
 # 配置参数
-SYMBOLS = {
+SYMBOLS = [
     "AFI.WI", "AGFI.WI", "ALFI.WI", "AOFI.WI", "APLFI.WI",
     "AUFI.WI", "BCFI.WI", "BFI.WI", "BRFI.WI", "BUFI.WI",
     "CFFI.WI", "CFI.WI", "CJFI.WI", "CSFI.WI", "CUFI.WI",
@@ -34,7 +34,7 @@ SYMBOLS = {
     "SIFI.WI", "SMFI.WI", "SNFI.WI", "SPFI.WI", "SRFI.WI",
     "SSFI.WI", "TAFI.WI", "URFI.WI", "VFI.WI", "WRFI.WI",
     "YFI.WI", "ZNFI.WI", "AU(T+D).SGE", "AG(T+D).SGE"
-    }  # 需要获取的品种列表
+    ]  # 需要获取的品种列表
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")  # 数据存储目录
 DEFAULT_START_DATE = datetime(1990, 1, 1).date()  # 默认起始日期
@@ -179,10 +179,24 @@ def main(end_date):
 
 
 if __name__ == "__main__":
+    import tkinter as tk
+    from tkinter import simpledialog
+    import sys
+    
+    root = tk.Tk()
+    root.withdraw()  # 隐藏主窗口
+    
     while True:
-        date_input = input("请输入截止日期(格式:YYYYMMDD): ")
+        date_input = simpledialog.askstring("输入截止日期", 
+                                          "请输入截止日期(格式:YYYYMMDD):\n示例:20250509",
+                                          parent=root)
+        if not date_input:
+            print("用户取消了输入")
+            sys.exit(0)
+            
         recent_date = validate_date_input(date_input)
         if recent_date:
             break
-        print("日期格式错误，请重新输入(示例:20250509)")    
+        tk.messagebox.showerror("错误", "日期格式错误，请重新输入")
+    
     main(end_date=recent_date)
